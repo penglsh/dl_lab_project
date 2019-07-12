@@ -7,9 +7,9 @@ from torch.autograd import Variable
 
 
 # class for upsample
-class Upsample(nn.Module):
+class Upscale(nn.Module):
     def __init__(self, scale, act=False):
-        super(Upsample, self).__init__()
+        super(Upscale, self).__init__()
         modules = []
         # add pixel shuffle
         modules.append(nn.PixelShuffle(scale))
@@ -114,7 +114,7 @@ class RDN(nn.Module):
         
         # Upsample
         self.up_conv = nn.Conv2d(nFeat_, nFeat_ * scale * scale, kernel_size=3, padding=1, bias=True)
-        self.up_sample = Upsample(scale)
+        self.up_scale = Upscale(scale)
         
         # last conv
         self.last_conv = nn.Conv2d(nFeat_, channels, kernel_size=3, padding=1, bias=True)
@@ -142,9 +142,9 @@ class RDN(nn.Module):
         
         # up conv and up smaple
         up_con = self.up_conv(F_DF)
-        up_sam = self.up_sample(up_con)
+        up_sca = self.up_scale(up_con)
         
-        out = self.last_conv(up_sam)
+        out = self.last_conv(up_sca)
         
         return out
         
