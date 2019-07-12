@@ -20,7 +20,7 @@ import torchvision
 '''
 
 class DIV2K_Dataset(Dataset):
-    def __init__(self, root='./data', scale=1, train=True, transform=None):
+    def __init__(self, root='./data', scale=1, patch_size=96, train=True, transform=None):
         '''
         init dataset with root dir
         scale: scale of image to be patched
@@ -30,13 +30,14 @@ class DIV2K_Dataset(Dataset):
         '''
         self.root = root
         self.scale = scale
+        self.patch_size = patch_size
         self.train = train
         
-        dirLR = 'LR/DIV2K_valid_LR_x8'
+        dirLR = 'LR/DIV2K_valid_LR_mild'
         dirHR = 'HR/DIV2K_valid_HR'
         
         if self.train:
-            dirLR = 'LR/DIV2K_train_LR_x8'
+            dirLR = 'LR/DIV2K_train_LR_mild'
             dirHR = 'HR/DIV2K_train_HR'
     
         self.transform = transform
@@ -55,7 +56,7 @@ class DIV2K_Dataset(Dataset):
         
         if self.scale != 1:
             '''see if need to patch'''
-            inImg, tarImg = utils.getPatch(inImg, tarImg, 96, self.scale)
+            inImg, tarImg = utils.getPatch(inImg, tarImg, self.patch_size, self.scale)
         # data augment
         # inImg, tarImg = augment(inImg, tarImg)
         
@@ -80,6 +81,6 @@ class DIV2K_Dataset(Dataset):
         '''
         name = self.fileList[idx]
         tarName = path.join(self.dirTar, name)
-        name = name[0:-4] + 'x8' + '.png' # ?
+        name = name[0:-4] + 'x4m' + '.png' # ?
         inName = path.join(self.dirIn, name)
         return inName, tarName
